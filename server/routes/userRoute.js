@@ -10,4 +10,8 @@ router.get('/users', userController.getUsers);
 
 router.post('/addUser',userController.addUser);
 
+router.put('/updateUser/:id',userController.updateUser);
+
+router.get('/login', userController.loginUser);
+
 module.exports = router;

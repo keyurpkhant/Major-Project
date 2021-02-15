@@ -3,20 +3,20 @@ const addressSchema = require('./addressModel');
 const ratingSchema = require('./ratingSchema');
 
 const deliveryExecutiveSchema = new mongoose.Schema({
-    _id:false,
+    _id: false,
     vehicleNumber: {
         type: String, // think for data type
-        required:true,
+        required: true,
     },
     deliveryExecutiveLocation: {
-        type:addressSchema,
-        required:true
+        type: addressSchema,
+        required: true
     },
     activityStatus: { //extended : 
         type: Boolean,
-        default:false
+        default: false
     },
-    deliveryExecutiveRatings: [ratingSchema],
+    deliveryExecutiveRatings: { type: [ratingSchema], default:undefined }
 });
 
-module.exports=deliveryExecutiveSchema;
+module.exports = deliveryExecutiveSchema;

@@ -31,36 +31,39 @@ const userSchema = new mongoose.Schema(
         role:
         {
             type: String,
-            enum:['user','ro','de'],   //enum
+            enum: ['user', 'ro', 'de'],   //enum
             required: true
         },
         deliveryExecutive: {
             type: deliveryExecutiveSchema
         },
         cart: {
-            _id:false,
-            restaurantId: {
-                type: String,
-                // required: true
-                default: ""
-            },
-            foodList: 
-            {
-                type:[{
-                    _id:false,
-                    foodId: {
-                        type: mongoose.Schema.Types.ObjectId,
-                        ref:'restaurant.menuDetails',
-                        required: true   //
-                    }, //Ref of User ID
-                    quantity: {
-                        type: Number,
-                        required: true  //
-                    },
-                    // required: true
+            type: {
+                _id: false,
+                restaurantId: {
+                    type: String,
+                    required: true
+                },
+                foodList:
+                {
+                    type: [{
+                        _id: false,
+                        foodId: {
+                            type: mongoose.Schema.Types.ObjectId,
+                            ref: 'restaurant.menuDetails',
+                            required: true   //
+                        }, //Ref of User ID
+                        quantity: {
+                            type: Number,
+                            required: true  //
+                        },
+                        // required: true
                     }],
-                default:undefined                    
-            },            
+                    required: true,
+                    default: undefined
+                },
+            },
+            default: undefined
         }
     }
 )
