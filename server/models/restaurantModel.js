@@ -25,6 +25,10 @@ const restaurantSchema = new mongoose.Schema(
             type:String,
             required:true           
         }],
+        restaurantCategory:[{
+            type:String,
+            required: true   
+        }],
         restaurantRatings:[{
             type:ratingSchema
         }],

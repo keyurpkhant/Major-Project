@@ -2,6 +2,7 @@ const mongoose = require('mongoose');
 const dotenv = require('dotenv');
 const express = require('express');
 const userRoute = require('./routes/userRoute');
+const restaurantRoute = require('./routes/restaurantRoute');
 
 dotenv.config();
 mongoose.connect(
@@ -23,13 +24,16 @@ app.use(express.json());
 
 app.use(userRoute);
 
+app.use(restaurantRoute);
+
 
 app.use("/", function(req, res){
     res.send("<h1>This is Home</h1>");
 })
 app.listen(3000, function(err){
     if(err){
-        throw err;
+        // throw err;
+        console.log(err);
     }
     else{
         console.log("Server is running...");

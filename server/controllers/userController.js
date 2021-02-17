@@ -88,7 +88,7 @@ exports.loginUser = (req, res, next) => {
     // const userDataCollection = mongoose.model('user', userSchema, 'users');
     let email = req.body.email;
     let password = req.body.password;
-    userDataCollection.findOne({ 'email': email }, { 'email': 1, 'password': 1 }, function (err, data) {
+    userDataCollection.find({ 'email': email }, { 'email': 1, 'password': 1 }, function (err, data) {
         if (err) console.log(err.message);
         else {
             if (data != null) {
