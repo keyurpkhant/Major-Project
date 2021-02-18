@@ -4,6 +4,7 @@ const restaurantSchema = require('../models/restaurantModel');
 const app = require("../server");
 // const categorySchema = require("../models/categoryModel");
 
+restaurantSchema.index({ '$**': 'text' });
 const restaurantDataCollection = mongoose.model('restaurant', restaurantSchema, 'restaurants');
 
 exports.getRestaurants = (req, res, next) => {
@@ -92,16 +93,22 @@ exports.getTopRestaurants = (req, res, next) => {
 }
 
 
-exports.searchRestaurants = (req,res,next) => {
-    let search=req.body.search;
-    restaurantDataCollection.find ({})
-    .select(search)
-    .exec(function (err, result) {
-        if (err) throw err;
-        console.log(result);
-        res.send(result);
-    });
+exports.searchRestaurants = (req, res, next) => {
+    let search = req.body.search;
+    let city = req.body.city;
+    restaurantDataCollection.find({
+        $text: {
+            $search: search,
+            $search: city
+        }
+    })
+        .exec(function (err, result) {
+            if (err) throw err;
+            console.log(result);
+            res.send(result);
+        });
 }
+
 
 // exports.getTopFood = (req, res, next) => {
 //     restaurantDataCollection.aggregate([
@@ -113,9 +120,9 @@ exports.searchRestaurants = (req,res,next) => {
 //                             "as": "food",
 //                             "in": {
 //                                 "$avg": {
-                                    
+
 //                                         "$food.foodRating.$rating"
-                                    
+
 //                                 }
 //                             }
 

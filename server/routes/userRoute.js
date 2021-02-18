@@ -14,4 +14,6 @@ router.put('/updateUser/:id',userController.updateUser);
 
 router.get('/login', userController.loginUser);
 
+router.put('/addToCart',userController.addToCart);
+
 module.exports = router;

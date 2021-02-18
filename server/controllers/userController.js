@@ -105,3 +105,21 @@ exports.loginUser = (req, res, next) => {
         }
     });
 }
+
+exports.addToCart=async (req,res,next)=>{
+    let id=req.body.id;
+    // let cart={
+    //     restaurantId: req.params.restaurantId,
+    //     foodList:req.params.foodList
+    // }
+
+    if(req.body.role=="user"){
+    
+        let existingCart=await userDataCollection.findById(id,{cart:1});
+        if(existingCart==null){
+            
+        }
+        console.log(existingCart);
+        // userDataCollection.findByIdAndUpdate(id,{"cart":cart})
+    }
+}
