@@ -4,6 +4,10 @@ const foodSchema = require('./foodModel');
 
 const orderSchema = new mongoose.Schema(
     {
+        userId: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: "userSchema",
+        },
         orderLocation: {
             type: addressSchema,
             required: true
@@ -11,6 +15,10 @@ const orderSchema = new mongoose.Schema(
         totalAmount: {
             type: Number,
             required: true
+        },
+        orderOtp: {
+            type: Number,
+            required: true,
         },
         orderStatus:
         {
@@ -38,27 +46,27 @@ const orderSchema = new mongoose.Schema(
             //     type: Boolean,
             //     required: true
             // }
-            type:String,
-            enum:['ordered','accepted','cooking','outfordelivery','delivered','cancelled'],
-            required:true,
+            type: String,
+            enum: ['ordered', 'accepted', 'cooking', 'outfordelivery', 'delivered', 'cancelled'],
+            required: true,
         },
         orderDateAndTime: {
             type: Date,
             required: true,
-            default:Date.now
+            default: Date.now
         },
         foodList: [
             {
-                _id:false,
+                _id: false,
                 foodItem: { type: foodSchema, required: true },
-                quantity: { type: number, required: true }
+                quantity: { type: Number, required: true }
             }
         ],
         restaurantDetails: {
             restaurantId: {
                 type: mongoose.Types.ObjectId,
                 required: true,
-                ref:'restaurant'
+                ref: 'restaurant'
             },
             restaurantName: {
                 type: String,

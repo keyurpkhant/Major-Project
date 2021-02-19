@@ -31,7 +31,7 @@ exports.getRestaurants = (req, res, next) => {
 
 
 exports.getRestaurantById = (req, res, next) => {
-    let id = mongoose.Types.ObjectId(req.body.id);
+    let id = mongoose.Types.ObjectId(req.query.id);
 
     restaurantDataCollection.aggregate([{ "$match": { "_id": id } },
     {
@@ -93,22 +93,45 @@ exports.getTopRestaurants = (req, res, next) => {
 }
 
 
-exports.searchRestaurants = (req, res, next) => {
+exports.searchRestaurants = async (req, res, next) => {
     let search = req.body.search;
     let city = req.body.city;
-    restaurantDataCollection.find({
+    let searchRestaurants = await restaurantDataCollection.find({
         $text: {
             $search: search,
             $search: city
         }
-    })
-        .exec(function (err, result) {
-            if (err) throw err;
-            console.log(result);
-            res.send(result);
-        });
+    }).catch((err) => {
+        res.send(err)
+    });
+
+    res.send(searchRestaurants);
+
 }
 
+
+exports.getTopFood = async (req, res, next) => {
+    let city="Ahmedabad";
+    let rest = await restaurantDataCollection.find({'restaurantLocation.city':city}).select('menuDetails');
+    let foodlist = [];
+    let ratings = [];
+    var temp;
+    rest.forEach((element, index) => {
+
+        element.menuDetails.forEach((food) => {
+            let avgRating = 0;
+            if (food.foodRating != undefined && food.foodRating.length > 0)
+                avgRating = food.foodRating.reduce((total, current) =>  total + current.rating , 0) / food.foodRating.length;
+            foodlist.push({ restaurantId: element._id.toString(), food: food, avgRating: avgRating })
+        })
+    })
+
+    foodlist = foodlist.sort(function(a,b){
+        return (a.avgRating<b.avgRating) ? 1 :-1; 
+    })
+
+    res.send(foodlist);
+}
 
 // exports.getTopFood = (req, res, next) => {
 //     restaurantDataCollection.aggregate([
@@ -125,7 +148,6 @@ exports.searchRestaurants = (req, res, next) => {
 
 //                                 }
 //                             }
-
 
 //                         }
 

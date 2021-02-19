@@ -1,5 +1,70 @@
 var mongoose = require("mongoose");
 const orderSchema = require('../models/orderModel');
+const restaurantSchema = require('../models/restaurantModel');
+const userSchema = require('../models/userModel');
 const app = require("../server");
 
-let orderDataCollection= mongoose.model('order',orderSchema,'orders');
+let orderDataCollection = mongoose.model('order', orderSchema, 'orders');
+let restaurantDataCollection = mongoose.model('restaurant', restaurantSchema, 'restaurants');
+let userDataCollection = mongoose.model('user', userSchema, 'users');
+
+exports.getOrders = async (req, res, next) => {
+    let userId = mongoose.Types.ObjectId(req.body.userId);
+    console.log(userId);
+    
+    let orders = await orderDataCollection.find({userId:userId});
+    console.log(orders);
+
+    res.send(orders);
+}
+
+exports.addOrder = async (req, res, next) => {
+    let userId = req.body.userId;
+    let deliveryExecutive = req.body.deliveryExecutive;
+
+    let userCart = await userDataCollection.findById(userId, { cart: 1 });
+    // console.log(userCart);
+
+    let totalAmount = 0;
+
+    let foodList = userCart.cart.foodList;
+    // console.log(foodList);
+    let restaurantMenu = await restaurantDataCollection.findById(userCart.cart.restaurantId, { menuDetails: 1, restaurantName: 1 })
+
+    // console.log(restaurantMenu.menuDetails);
+    let orderFoodList = [];
+    foodList.forEach((element) => {
+        let foodItem = restaurantMenu.menuDetails.find((x) => {
+            console.log("x:", x);
+            return x._id.toString() == element.foodId;
+        })
+        orderFoodList.push({ foodItem: foodItem, quantity: element.quantity });
+        totalAmount += (foodItem.foodPrice) * element.quantity;
+    });
+
+
+    console.log("Total amount:", totalAmount);
+
+    let orderObj = new orderDataCollection({
+        userId: userId,
+        orderLocation: req.body.orderLocation,
+        totalAmount: totalAmount,
+        orderOtp:1234,
+        orderStatus: 'ordered',
+        orderDateAndTime: Date.now(),
+        foodList: orderFoodList,
+        restaurantDetails: {
+            restaurantId: restaurantMenu._id,
+            restaurantName: restaurantMenu.restaurantName
+        },
+        deliveryExecutive: deliveryExecutive
+    })
+
+    orderObj.save(function (err, order) {
+        if (err) console.log(err.message);
+        else {
+            console.log("Order Data======>", order);
+        }
+    })
+}
+
