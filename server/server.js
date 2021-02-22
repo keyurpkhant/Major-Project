@@ -4,6 +4,7 @@ const express = require('express');
 const userRoute = require('./routes/userRoute');
 const restaurantRoute = require('./routes/restaurantRoute');
 const orderRoute = require ('./routes/orderRoute');
+const cors = require('cors');
 
 dotenv.config();
 mongoose.connect(
@@ -20,6 +21,7 @@ db.on('error', console.error.bind(console, 'connection error'));
 // First time user registartion
 
 const app = express();
+app.use(cors());
 app.use(express.json());
 
 
